@@ -4,6 +4,7 @@ import { UserType } from "../../../../model/user.type.entity";
 import { UserInfo } from "../../../../model/user.info.entity";
 import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
+import { v4 as uuidv4 } from "uuid";
 import {
   SaveUserType,
   UserTypeResponse,
@@ -15,92 +16,18 @@ import {
   DeleteUserInfo,
   LoginDTO,
 } from "../dto/user-info.dto";
-import { resolve } from "path/posix";
+import { InviteUserDTO } from "../dto/invite-user.dto";
+import { Invitation } from "../../../../model/invittion.entity";
 
 @Injectable()
 export class UserTypeDBHelperService {
   private readonly logger = new Logger(UserTypeDBHelperService.name);
   constructor(
-    @InjectRepository(UserType)
-    private readonly userTypeRepo: Repository<UserType>,
     @InjectRepository(UserInfo)
-    private readonly userInfoRepo: Repository<UserInfo>
+    private readonly userInfoRepo: Repository<UserInfo>,
+    @InjectRepository(Invitation)
+    private readonly invitationRepo: Repository<Invitation>
   ) {}
-
-  async getUserType(): Promise<UserTypeResponse[]> {
-    this.logger.log(`getUserType has been initiated.`);
-    let result;
-    let response: UserTypeResponse[] = new Array();
-    try {
-      result = await this.userTypeRepo.find();
-      response = result.map((item) => {
-        return {
-          name: item.Name,
-          id: item.Id,
-          createdDate: item.CreateDate.toString(),
-        };
-      });
-    } catch (error) {
-      this.logger.error(error);
-      throw new BadRequestException(
-        "Could not get user type. Something went wrong."
-      );
-    }
-
-    this.logger.log(`returning from getUserType.`);
-    return response;
-  }
-
-  async saveUserType(data: SaveUserType): Promise<SaveUserType> {
-    this.logger.log(`saveUserType has been initiated.`);
-    let response = new UserTypeResponse();
-    try {
-      let newUserType = new UserType();
-      newUserType.Name = data.name;
-      let result = await this.userTypeRepo.save(newUserType);
-      response.name = result.Name;
-      response.id = result.Id;
-      response.createdDate = result.CreateDate.toString();
-    } catch (error) {
-      this.logger.error(error);
-      throw new BadRequestException(
-        "Could not save user type. Something went wrong."
-      );
-    }
-
-    this.logger.log(`returning from saveUserType.`);
-    return response;
-  }
-
-  async getUserTypeById(id: number) {
-    const userType = await this.userTypeRepo.findOne(id);
-    if (!userType || !userType.Id) {
-      throw new BadRequestException(`User Type not found with id: ${id}`);
-    }
-    return userType;
-  }
-
-  async deleteUserType(data: DeleteUserType): Promise<any> {
-    this.logger.log(`deleteUserType has been initiated.`);
-
-    const userType = await this.userTypeRepo.findOne(data.id);
-    if (!userType || !userType.Name) {
-      throw new BadRequestException(
-        `User type not exists with id: ${data.id}.`
-      );
-    }
-    try {
-      await this.userTypeRepo.delete(data.id);
-    } catch (error) {
-      this.logger.error(error);
-      throw new BadRequestException(
-        "Could not delete user type. Something went wrong."
-      );
-    }
-
-    this.logger.log(`returning from deleteUserType.`);
-    return true;
-  }
 
   async getUserInfoById(data: DeleteUserInfo): Promise<UserInfoResponse> {
     this.logger.log(`getUserInfoById has been initiated.`);
@@ -241,25 +168,44 @@ export class UserTypeDBHelperService {
     return response;
   }
 
-  async deleteUserInfo(data: DeleteUserInfo): Promise<any> {
-    this.logger.log(`deleteUserInfo has been initiated.`);
+  async inviteUser(userInfo: InviteUserDTO): Promise<any> {
+    this.logger.log(`inviteUser has been initiated.`);
 
-    const userInfo = await this.userInfoRepo.findOne(data.id);
-    if (!userInfo || !userInfo.Name) {
-      throw new BadRequestException(
-        `User not exists with id: ${data.id}.`
-      );
+    const existingUsers = await this.invitationRepo.find({
+      where: {
+        Email: userInfo.email,
+        Status: 'completed'
+      }
+    });
+
+    if(existingUsers && existingUsers.length > 0) {
+      return {
+        isSuccess: false,
+        message: `User already exists with email: ${userInfo.email}`
+      }
     }
-    try {
-      await this.userInfoRepo.delete(data.id);
-    } catch (error) {
-      this.logger.error(error);
-      throw new BadRequestException(
-        "Could not delete user. Something went wrong."
-      );
-    }
+
+    let inviation = new Invitation();
+    inviation.Email = userInfo.email;
+    inviation.CompanyId = userInfo.companyId;
+    inviation.UserType = userInfo.userType;
+    inviation.InvitedBy = userInfo.invitedBy;
+    inviation.Status = 'pending';
+    inviation.UUID = uuidv4();
+
+
+    const saltRounds = (Math.floor(Math.random() * 13) + 1000) % 1000;
+    let password = uuidv4();
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+    inviation.TemporaryPassword = passwordHash;
+
+    const user = await this.invitationRepo.save(inviation);
 
     this.logger.log(`returning from deleteUserInfo.`);
-    return true;
+    return {
+      isSuccess: true,
+      email: userInfo.email,
+      password: password
+    }
   }
 }

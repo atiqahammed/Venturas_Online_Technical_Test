@@ -9,9 +9,6 @@ import { configService } from './config/config.service';
 import { UserModule } from './api/v1/user/user.module';
 import { ProposalModule } from './api/v1/proposal/proposal.module';
 import { NftModule } from './api/v1/nft/nft.module';
-import { GraphWatcherModule } from './modules/graph-watcher/graph-watcher.module';
-import { GraphWatcherService } from './modules/graph-watcher/services/graph-watcher.service';
-import { TransactionProcessorModule } from './modules/transaction-processor/transaction-processor.module';
 
 
 @Module({
@@ -22,9 +19,7 @@ import { TransactionProcessorModule } from './modules/transaction-processor/tran
     ProjectModule,
     UserModule,
     ProposalModule,
-    NftModule,
-    GraphWatcherModule,
-    TransactionProcessorModule
+    NftModule
   ],
   controllers: [AppController],
   providers: [AppService,]

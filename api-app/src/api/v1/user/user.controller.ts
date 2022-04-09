@@ -1,30 +1,35 @@
-import { Controller, Get, Headers } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { Logger } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
-import { AuthService } from "../../auth/tokenAuth/auth.service";
 import { UserService } from "./services/user.service";
-import { AuthLoginDto } from "../../../api/auth/tokenAuth/dto/auth.dto";
+import { InviteUserDTO } from "./dto/invite-user.dto";
 
 
 @Controller("api/v1")
 export class UserController {
   private readonly logger = new Logger(UserController.name);
   constructor(
-    private readonly authService: AuthService) {}
+    private readonly UserService: UserService) {}
 
+
+  @Post("invite-user")
   @ApiOperation({
-    description: "This endpoint provides JWT auth token. It's require X-API-KEY and eoa in request header.",
-    summary: "Get Authentication Token",
+    description: "This api is for inviting user with user email address",
+    summary: "current-balance",
   })
-  @Get("get-authentication-token")
-  async getAuthenticationToken(
-    @Headers("X-API-KEY") apikey: string,
-    @Headers("eoa") eoa: string
-  ) {
-    let authLoginDto = new AuthLoginDto()
-    authLoginDto.apikey = apikey;
-    authLoginDto.eoa = eoa;
-    console.log(authLoginDto);
-    return this.authService.login(authLoginDto);
+  public async inviteUser(
+    @Body() body: InviteUserDTO
+  ): Promise<any> {
+    this.logger.log(`inviteUser has been initiated`);
+
+    try {
+      const response = await this.UserService.inviteUser(body);
+      return response;
+    }catch(error) {
+      return {
+        isSuccess: false,
+        message: `Something went wrong. Please Try again later.`
+      }
+    }
   }
 }

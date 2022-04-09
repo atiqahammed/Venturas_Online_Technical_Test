@@ -11,12 +11,14 @@ import { AuthService } from '../../auth/tokenAuth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from '../../auth/headerAuth/auth.module';
 import { TokenAuthModule } from '../../auth/tokenAuth/auth.module';
+import { Invitation } from "../../../model/invittion.entity";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Project]),
     TypeOrmModule.forFeature([UserType]),
     TypeOrmModule.forFeature([UserInfo]),
+    TypeOrmModule.forFeature([Invitation]),
     CommonCacheModule,AuthModule,TokenAuthModule
   ],
   controllers: [UserController],

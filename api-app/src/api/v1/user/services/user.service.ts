@@ -8,13 +8,7 @@ import {
 import { UserTypeDBHelperService } from "./db-helper.service";
 import * as uuid from 'uuid';
 import { CacheManagerService } from '../../../../common/cache/cache.service';
-
-
-
-
-
-
-
+import { InviteUserDTO } from "../dto/invite-user.dto";
 
 @Injectable()
 export class UserService {
@@ -26,27 +20,6 @@ export class UserService {
     private readonly cacheManagerService: CacheManagerService
   ) {
     this.timeoutNum = Number(process.env.SESSION_TIMEOUT) || 3600;
-  }
-
-  public async saveUserType(dto: SaveUserType): Promise<any> {
-    this.logger.log("SaveUserType has been initiated.");
-    const response = await this.dbHelperService.saveUserType(dto);
-    this.logger.log("Returning from SaveUserType.");
-    return response;
-  }
-
-  public async getUserType(): Promise<any> {
-    this.logger.log("getUserType has been initiated.");
-    const response = await this.dbHelperService.getUserType();
-    this.logger.log("Returning from getUserType.");
-    return response;
-  }
-
-  public async deleteUserType(dto: DeleteUserType): Promise<any> {
-    this.logger.log("deleteUserType has been initiated.");
-    const response = await this.dbHelperService.deleteUserType(dto);
-    this.logger.log("Returning from deleteUserType.");
-    return response;
   }
 
   public async saveUserInfo(dto: SaveUserInfo): Promise<any> {
@@ -70,17 +43,6 @@ export class UserService {
     return response;
   }
 
-  public async getUserTypeById(dto: DeleteUserType): Promise<any> {
-    this.logger.log('getUserTypeById has been initiated.');
-    const userType = await this.dbHelperService.getUserTypeById(dto.id);
-    let response = new UserTypeResponse();
-    response.name = userType.Name;
-    response.id = userType.Id;
-    response.createdDate = userType.CreateDate.toString();
-    this.logger.log('Returning from getUserTypeById.');
-    return response;
-  }
-
   public async getUserInfo(): Promise<any> {
     this.logger.log("getUserInfo has been initiated.");
     const response = await this.dbHelperService.getUserInfo();
@@ -95,10 +57,10 @@ export class UserService {
     return response;
   }
 
-  public async deleteUserInfo(dto: DeleteUserType): Promise<any> {
-    this.logger.log("deleteUserInfo has been initiated.");
-    const response = await this.dbHelperService.deleteUserInfo(dto);
-    this.logger.log("Returning from deleteUserInfo.");
+  public async inviteUser(userInfo: InviteUserDTO) {
+    this.logger.log("inviteUser has been initiated.");
+    const response = await this.dbHelperService.inviteUser(userInfo);
+    this.logger.log("inviteUser from deleteUserInfo.");
     return response;
   }
 }

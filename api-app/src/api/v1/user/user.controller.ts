@@ -15,7 +15,7 @@ export class UserController {
   @Post("invite-user")
   @ApiOperation({
     description: "This api is for inviting user with user email address",
-    summary: "current-balance",
+    summary: "invite a user for creating user account.",
   })
   public async inviteUser(
     @Body() body: InviteUserDTO

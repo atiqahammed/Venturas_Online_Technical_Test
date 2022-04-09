@@ -1,8 +1,6 @@
 import React from "react";
 import TextInput from "../common/TextInput";
 import { Link } from "react-router-dom";
-// import Dropdown from 'react-dropdown';
-import ReadOnlyTextInput from "../common/ReadOnlyTextInput";
 
 function RegistrationForm(props) {
     
@@ -18,7 +16,7 @@ function RegistrationForm(props) {
         error={props.errors.email}
       />
 
-    <input type="submit" value="Save" className="btn btn-dark" /> {"   "}
+    <input type="submit" value="Continue" className="btn btn-dark" /> {"   "}
     <Link to="/" className="btn btn-dark">Cancel</Link>
     </form>
   );

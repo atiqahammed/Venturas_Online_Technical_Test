@@ -12,6 +12,7 @@ function Header() {
 				<NavLink className="nav-link" to="/authors" activeStyle={activeLinkStyle} exact><h4>Authors</h4></NavLink>
                 <NavLink className="nav-link" to="/books" activeStyle={activeLinkStyle} exact><h4>Books</h4></NavLink>
 				<NavLink className="nav-link" to="/about" activeStyle={activeLinkStyle} exact><h4>About</h4></NavLink>
+				<NavLink className="nav-link" to="/registration" activeStyle={activeLinkStyle} exact><h4>Sign Up</h4></NavLink>
 			</nav>
 		</>
   	);

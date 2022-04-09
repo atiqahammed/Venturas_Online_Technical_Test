@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import * as bookApi from "../../api/bookApi"
+import React, { useState } from "react";
 import { toast } from "react-toastify";
-import BookForm from "../books/BookForm";
 import RegistrationForm from "./RegistrationForm";
+import { post } from "./../../util/httpClient";
+import { USER_TYPE } from "./../../util/const";
 
-function ManageRegistration(props) {
+function ManageRegistration() {
 
   const [errors, setErrors] = useState({});
   const [user, setUser] = useState({
-    email: null
+    email: ''
   });
 
   function handleChange({target}) {
@@ -20,7 +20,7 @@ function ManageRegistration(props) {
   function formIsValid() {
     const _errors = {};
 
-    if (!user.email) _errors.id = "ID is required";
+    if (!user.email) _errors.email = "Email is required";
 
     setErrors(_errors);
 
@@ -30,22 +30,27 @@ function ManageRegistration(props) {
   function handleSubmit(event) {
     event.preventDefault();
     if (!formIsValid()) return;
-    console.log(user);
 
-    // if(props.match.params.id) {
-    //     bookApi.updateBook(book).then(() => {
-    //         props.history.push("/books");
-    //         toast.success("Book Updated Successfully.");
-    //     });
-    // } else {
-    //     bookApi.saveBook(book).then(() => {
-    //         props.history.push("/books");
-    //         toast.success("Book Created Successfully.");
-    //     });
-    // }
-    
+    const requestBody = {
+      email: user.email,
+      invitedBy: 0,
+      companyId: 0,
+      userType: USER_TYPE.SYSTEM_ADMIN
+    }
+    post('/invite-user', requestBody).then(response => {
+      console.log(response);
+      if(response && response.data && response.data.isSuccess) {
+        toast("Please check your email to complete registration.");
+        setUser({
+          email: ''
+        });
+      } else {
+        toast("Something went wrong. Please check again.");
+      }
+    }).catch(error => {
+        console.log(error);
+    });
   }
-
 
   return (
     <>

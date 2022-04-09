@@ -14,13 +14,20 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new HttpResponseInterceptor());
 
+  const corsOrigin = '*';
+
+  app.enableCors({
+    origin: corsOrigin,
+    allowedHeaders:
+      'Origin, X-Requested-With, Content-Type, Accept',
+  });
 
 
   const config = new DocumentBuilder()
-    .setTitle('Crastonic NFT API')
-    .setDescription('Crastonic NFT API description')
+    .setTitle('Techinal Test API')
+    .setDescription('API description')
     .setVersion('1.0')
-    .addTag('Crastonic')
+    .addTag('Techinal Test')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

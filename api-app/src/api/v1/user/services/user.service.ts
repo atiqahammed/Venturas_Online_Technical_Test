@@ -71,7 +71,7 @@ export class UserService {
     const response = await this.dbHelperService.inviteUser(userInfo);
     if (response.isSuccess) {
       const courier = CourierClient({
-        authorizationToken: "pk_prod_S754PKGGSX47MQNW675SFBS56EDH",
+        authorizationToken: process.env.EMAIL_API_KEY,
       });
 
       const { requestId } = await courier.send({

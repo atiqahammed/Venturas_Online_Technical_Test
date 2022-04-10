@@ -16,11 +16,10 @@ function Header() {
 				{loggedIn && <>
 					<NavLink className="nav-link" to="/profile" activeStyle={activeLinkStyle} exact><h4>Profile</h4></NavLink>
 					<NavLink className="nav-link" to="/company-list" activeStyle={activeLinkStyle} exact><h4>Company</h4></NavLink>
-					<NavLink className="nav-link" to="/books" activeStyle={activeLinkStyle} exact><h4>Books</h4></NavLink>
+					<NavLink className="nav-link" to="/invitation-list" activeStyle={activeLinkStyle} exact><h4>Invitation</h4></NavLink>
 				</>}
 				
 				{!loggedIn && <>
-					
 					<NavLink className="nav-link pull-right" to="/registration" activeStyle={activeLinkStyle} exact><h4>Sign Up</h4></NavLink>
 				</>}
 

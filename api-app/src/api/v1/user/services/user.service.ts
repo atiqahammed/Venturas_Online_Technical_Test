@@ -1,14 +1,9 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { LoginDTO, SaveUserInfo } from "../dto/user-info.dto";
-import {
-  SaveUserType,
-  UserTypeResponse,
-  DeleteUserType,
-} from "../dto/user-type.dto";
 import { UserTypeDBHelperService } from "./db-helper.service";
 import * as uuid from "uuid";
 import { CacheManagerService } from "../../../../common/cache/cache.service";
-import { InviteUserDTO } from "../dto/invite-user.dto";
+import { InviteUserDTO, UserRegistrationDTO } from "../dto/invite-user.dto";
 import { CourierClient } from "@trycourier/courier";
 
 @Injectable()
@@ -58,10 +53,10 @@ export class UserService {
     return response;
   }
 
-  public async getUserInfoById(dto: DeleteUserType): Promise<any> {
-    this.logger.log("getUserInfoById has been initiated.");
-    const response = await this.dbHelperService.getUserInfoById(dto);
-    this.logger.log("Returning from getUserInfoById.");
+  public async completeRegistration(dto: UserRegistrationDTO): Promise<any> {
+    this.logger.log("completeRegistration has been initiated.");
+    const response = await this.dbHelperService.completeRegistration(dto);
+    this.logger.log("Returning from completeRegistration.");
     return response;
   }
 

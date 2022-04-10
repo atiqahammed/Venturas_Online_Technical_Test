@@ -2,7 +2,7 @@ import { Body, Controller, Post } from "@nestjs/common";
 import { Logger } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { UserService } from "./services/user.service";
-import { InviteUserDTO } from "./dto/invite-user.dto";
+import { InviteUserDTO, UserRegistrationDTO } from "./dto/invite-user.dto";
 
 
 @Controller("api/v1")
@@ -24,6 +24,27 @@ export class UserController {
 
     try {
       const response = await this.UserService.inviteUser(body);
+      return response;
+    }catch(error) {
+      return {
+        isSuccess: false,
+        message: `Something went wrong. Please Try again later.`
+      }
+    }
+  }
+
+  @Post("complete-user-registration")
+  @ApiOperation({
+    description: "This api is for completing user registration",
+    summary: "complete a user registration with user information.",
+  })
+  public async completeUserRegistration(
+    @Body() body: UserRegistrationDTO
+  ): Promise<any> {
+    this.logger.log(`completeUserRegistration has been initiated`);
+
+    try {
+      const response = await this.UserService.completeRegistration(body);
       return response;
     }catch(error) {
       return {

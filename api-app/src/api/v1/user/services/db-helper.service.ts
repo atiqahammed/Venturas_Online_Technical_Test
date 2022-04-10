@@ -1,22 +1,15 @@
 import { BadRequestException, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserType } from "../../../../model/user.type.entity";
 import { UserInfo } from "../../../../model/user.info.entity";
 import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
 import {
-  SaveUserType,
-  UserTypeResponse,
-  DeleteUserType,
-} from "../dto/user-type.dto";
-import {
   SaveUserInfo,
   UserInfoResponse,
-  DeleteUserInfo,
   LoginDTO,
 } from "../dto/user-info.dto";
-import { InviteUserDTO } from "../dto/invite-user.dto";
+import { InviteUserDTO, UserRegistrationDTO } from "../dto/invite-user.dto";
 import { Invitation } from "../../../../model/invittion.entity";
 
 @Injectable()
@@ -29,34 +22,70 @@ export class UserTypeDBHelperService {
     private readonly invitationRepo: Repository<Invitation>
   ) {}
 
-  async getUserInfoById(data: DeleteUserInfo): Promise<UserInfoResponse> {
-    this.logger.log(`getUserInfoById has been initiated.`);
-    let result = await this.userInfoRepo.findOne(data.id);
+  async completeRegistration(data: UserRegistrationDTO): Promise<any> {
+    this.logger.log(`completeRegistration has been initiated.`);
+    let result = await this.invitationRepo.findOne({where : { UUID : data.uuid }});
 
     if(!result) {
-      throw new BadRequestException(
-        `User not exists with id: ${data.id}.`
-      );
+      return {
+        isSuccess: false,
+        message: `Invitation not exists with id: ${data.uuid}.`
+      }
     }
 
-    let response: UserInfoResponse = new UserInfoResponse();
-    try {
-      
-      response.id = result.Id;
-      response.name = result.Name;
-      // response.EOA = result.EOA;
-      response.email = result.Email;
-      response.createdDate = result.CreateDate.toString();
-
-    } catch (error) {
-      this.logger.error(error);
-      throw new BadRequestException(
-        "Could not get user info. Something went wrong."
-      );
+    if(result.Status != 'pending') {
+      return {
+        isSuccess: false,
+        message:  `Invitation has been expired.`
+      }
     }
 
-    this.logger.log(`returning from getUserInfoById.`);
-    return response;
+    let user = await this.userInfoRepo.findOne({where: {Email: result.Email }});
+
+    if(user) {
+
+      return {
+        isSuccess: false,
+        message:  `User already exists with same email.`
+      }
+    }
+
+    const passwordCheck = await bcrypt.compare(
+      data.temporaryPassword,
+      result.TemporaryPassword
+    );
+
+    if(!passwordCheck) {
+      return {
+        isSuccess: false,
+        message:  `Invalid Password`
+      }
+    }
+
+    result.Status = 'complete';
+    await this.invitationRepo.save(result);
+
+    let newUser = new UserInfo();
+    newUser.Email = result.Email;
+    newUser.Name = data.name;
+    newUser.Department = data.department;
+    newUser.CompanyId = result.CompanyId;
+    newUser.UserType = result.UserType;
+    newUser.Remarks = data.remarks;
+    newUser.DateOfBirth = data.dateOfBirth;
+    newUser.PhoneNumber = data.phoneNumber;
+    newUser.Address = data.address;
+    newUser.ZipCode = data.zipCode;
+    const saltRounds = (Math.floor(Math.random() * data.password.length) + 1000) % 1000;
+    newUser.Password = await bcrypt.hash(data.password, saltRounds);
+
+    await this.userInfoRepo.save(newUser);
+
+    this.logger.log(`returning from completeRegistration.`);
+    return {
+      isSuccess: true,
+      message: 'Account Created Successfully.'
+    };
   }
 
   async getUserInfo(): Promise<UserInfoResponse[]> {

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
+import { post } from "./../../util/httpClient";
 import TextInput from "../common/TextInput";
 
 function CompleteRegistration(props) {
@@ -15,7 +17,7 @@ function CompleteRegistration(props) {
     department: '',
     password: '',
     temporaryPassword: '',
-    regards: '',
+    remarks: '',
     dateOfBirth: ''
   });
 
@@ -35,7 +37,7 @@ function CompleteRegistration(props) {
     if (!user.department) _errors.department = "Department is required";
     if (!user.password) _errors.password = "Password is required";
     if (!user.temporaryPassword) _errors.temporaryPassword = "Temporary Password is required";
-    if (!user.regards) _errors.regards = "Regards is required";
+    if (!user.remarks) _errors.remarks = "Remarks is required";
     if (!user.dateOfBirth) _errors.dateOfBirth = "Date Of Birth is required";
 
     setErrors(_errors);
@@ -52,25 +54,31 @@ function CompleteRegistration(props) {
 
     console.log(user)
 
-    // const requestBody = {
-    //   email: user.email,
-    //   invitedBy: 0,
-    //   companyId: 0,
-    //   userType: USER_TYPE.SYSTEM_ADMIN
-    // }
-    // post('/invite-user', requestBody).then(response => {
-    //   console.log(response);
-    //   if(response && response.data && response.data.isSuccess) {
-    //     toast("Please check your email to complete registration.");
-    //     setUser({
-    //       email: ''
-    //     });
-    //   } else {
-    //     toast("Something went wrong. Please check again.");
-    //   }
-    // }).catch(error => {
-    //     console.log(error);
-    // });
+    const requestBody = {
+      "uuid": token,
+      "name": user.name,
+      "zipCode": user.zipCode,
+      "address": user.zipCode,
+      "phoneNumber": user.phoneNumber,
+      "department": user.department,
+      "password": user.password,
+      "temporaryPassword": user.temporaryPassword,
+      "remarks": user.remarks,
+      "dateOfBirth": user.dateOfBirth
+    }
+    console.log(requestBody);
+    post('/complete-user-registration', requestBody).then(response => {
+      console.log(response);
+      if(response && response.data && response.data.isSuccess) {
+        toast("User registration is completed. Please login");
+       
+      }
+      if(!response.isSuccess && response.data.message) {
+        toast(response.data.message);
+      }
+    }).catch(error => {
+        console.log(error);
+    });
   }
 
   return (
@@ -136,12 +144,12 @@ function CompleteRegistration(props) {
         />
 
         <TextInput
-          id="regards"
-          label="Regards"
-          name="regards"
+          id="remarks"
+          label="Remarks"
+          name="remarks"
           onChange={handleChange}
-          value={user.regards}
-          error={errors.regards}
+          value={user.remarks}
+          error={errors.remarks}
         />
 
         <TextInput

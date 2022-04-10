@@ -13,6 +13,7 @@ import Profile from "./user/Profile";
 import ManageCompanyPage from "./company/ManageCompanyPage";
 import InvitationPage from "./invitation/InvitationPage";
 import ManageInvitationPage from "./invitation/ManageInvitationPage";
+import EmployeePage from "./invitation/EmployeePage";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
 				<Route path="/complete-registration"component={CompleteRegistration} />
 				<Route path="/company/:id"component={ManageCompanyPage} />
 				<Route path="/company"component={ManageCompanyPage} />
+				<Route path="/employee"component={EmployeePage} />
 				<Route path="/invitation"component={ManageInvitationPage} />
 				<Route path="/registration"component={ManageRegistration} />
 				

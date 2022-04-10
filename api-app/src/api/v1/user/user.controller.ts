@@ -141,4 +141,26 @@ export class UserController {
       }
     }
   }
+
+  @Post("get-employee-list")
+  @ApiOperation({
+    description: "This api is for getting employee information",
+    summary: "This api is for saving employee information",
+  })
+  public async employeeList(
+    @Body() body: getCompanyListDTO
+  ): Promise<any> {
+    this.logger.log(`employeeList has been initiated`);
+
+    try {
+      const response = await this.UserService.getEmployeeList(body);
+      return response;
+    }catch(error) {
+      console.log(error);
+      return {
+        isSuccess: false,
+        message: `Something went wrong. Please Try again later.`
+      }
+    }
+  }
 }

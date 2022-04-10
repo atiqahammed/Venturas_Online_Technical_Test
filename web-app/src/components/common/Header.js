@@ -17,6 +17,7 @@ function Header() {
 					<NavLink className="nav-link" to="/profile" activeStyle={activeLinkStyle} exact><h4>Profile</h4></NavLink>
 					<NavLink className="nav-link" to="/company-list" activeStyle={activeLinkStyle} exact><h4>Company</h4></NavLink>
 					<NavLink className="nav-link" to="/invitation-list" activeStyle={activeLinkStyle} exact><h4>Invitation</h4></NavLink>
+					<NavLink className="nav-link" to="/employee" activeStyle={activeLinkStyle} exact><h4>Employee</h4></NavLink>
 				</>}
 				
 				{!loggedIn && <>

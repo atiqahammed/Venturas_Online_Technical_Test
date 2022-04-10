@@ -148,6 +148,42 @@ export class UserTypeDBHelperService {
     };
   }
 
+  async getEmployeeList(dto: getCompanyListDTO) {
+    this.logger.log(`getEmployeeList has been initiated.`);
+
+    const user = await this.userInfoRepo.findOne({
+      where: {
+        Id: dto.id
+      }
+    });
+
+    let employeeList = [];
+
+    if(user.CompanyId == 0) {
+      const companyList = await this.companyRepo.find({
+        where: {
+          OwnerId: dto.id
+        }
+      }); 
+
+      const companyIds = companyList.map(item => item.Id);
+      const allUsers = await this.userInfoRepo.find();
+      employeeList = allUsers.filter(item => companyIds.includes(item.CompanyId));
+    } else {
+      employeeList = await this.userInfoRepo.find({
+        where: {
+          CompanyId: user.CompanyId
+        }
+      });
+    }
+
+    this.logger.log(`returning from getEmployeeList.`);
+    return {
+      isSuccess: true,
+      employeeList,
+    };
+  }
+
   async loginInUser(data: LoginDTO): Promise<any> {
     this.logger.log(`loginInUser has been initiated.`);
 

@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { LoginDTO } from "../dto/user-info.dto";
 import { InviteUserDTO, UserRegistrationDTO } from "../dto/invite-user.dto";
 import { Invitation } from "../../../../model/invittion.entity";
-import { SaveCompanyDTO } from "../dto/user-type.dto";
+import { getCompanyListDTO, SaveCompanyDTO } from "../dto/user-type.dto";
 import { Company } from "../../../../model/company.entity";
 
 @Injectable()
@@ -113,6 +113,24 @@ export class UserTypeDBHelperService {
     return {
       isSuccess: true,
       message: 'Company Information Saved.'
+    };
+  }
+
+  async getCompanyList(dto: getCompanyListDTO) {
+    this.logger.log(`getCompanyList has been initiated.`);
+    
+    let companyList = await this.companyRepo.find(
+      {
+        where: {
+          OwnerId: dto.id
+        }
+      }
+    )
+
+    this.logger.log(`returning from getCompanyList.`);
+    return {
+      isSuccess: true,
+      companyList
     };
   }
 

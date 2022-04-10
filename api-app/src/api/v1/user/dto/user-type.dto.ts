@@ -76,7 +76,7 @@ export class UserTypeResponse {
   createdDate: string;
 }
 
-export class DeleteUserType {
+export class getCompanyListDTO {
 
   @IsNotEmpty()
   @ApiProperty()

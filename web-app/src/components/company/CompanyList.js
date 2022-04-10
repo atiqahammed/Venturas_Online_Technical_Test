@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function BookList (props) {
+function CompanyList (props) {
     return (
       <>
         <div className="container">
@@ -10,16 +10,18 @@ function BookList (props) {
               <tr>
                 <th>Name</th>
                 <th>ID</th>
-                <th>Categoty</th>
+                <th>Email</th>
+                <th>Address</th>
               </tr>
             </thead>
             <tbody>
-                {props.books.map((book) =>{
+                {props.companyList.map((company) =>{
                     return (
-                        <tr key={book.id}>
-                            <td><Link to={"/book/" + book.id}>{book.name}</Link></td>
-                            <td>{book.id}</td>
-                            <td>{book.category}</td>
+                        <tr key={company.Id}>
+                            <td><Link to={"/company/" + company.Id}>{company.Name}</Link></td>
+                            <td>{company.Id}</td>
+                            <td>{company.Email}</td>
+                            <td>{company.Address}</td>
                         </tr>
                     )
                 })}
@@ -30,4 +32,4 @@ function BookList (props) {
     );
 }
 
-export default BookList;
+export default CompanyList;

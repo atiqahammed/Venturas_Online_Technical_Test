@@ -32,36 +32,35 @@
 
 ## Steps to run
 1. Clone the code
-2. add .npmrc with respective values
-  ```
-    @devotrixinc:registry=https://npm.pkg.github.com
-    //npm.pkg.github.com/:_authToken=<_authToken>
-    registry=https://registry.npmjs.org/
-  ```
-3. run 
+2. run 
     ```
     yarn install
     ```
-4. Create a database with name NFT_DATABASE
-5. Set environment variables in .env file
+3. Create a database with name NFT_DATABASE
+4. Set environment variables in .env file
     ```
     NODE_ENV=development
-    PORT=3000
-     
-    POSTGRES_HOST=127.0.0.1
-    POSTGRES_PORT=5432
-    POSTGRES_USER=postgres
-    POSTGRES_PASSWORD=VeryStrongPassword_0
-    POSTGRES_DATABASE=NFT_DATABASE
+    PORT=4000
+
+    DB_HOST=127.0.0.1
+    DB_PORT=5432
+    DB_USER=postgres
+    DB_PASS=VeryStrongPassword_0
+    DB_NAME=employee_db
+
+    WEB_REGISTRATION_COMPLETE_URL=http://localhost:3000/complete-registration
+    EMAIL_API_KEY=pk_prod_S754PKGGSX47MQNW675SFBS56EDH
+
     MODE=DEV
     RUN_MIGRATIONS=true
-     
-    NETWORK=ganache
-    PRIVATE_KEY=
-    PRIVATE_KEY_GANACHE=
+
+    JWT_SECRET_KEY=1ab2c3d4e5f61ad8c3d4e5f8
+    JWT_TIMEOUT_IN_SECONDS=100000s
+    API_KEY=1ab2c3d4e5f61ad8c3d4e5f8
+    SESSION_TIMEOUT=100000
     ```
-6. Make Sure ormconfig.json, nodemon.json or nodemon-deploy.json has proper value associated with database connection.
-8. Built the code with the following command
+5. Make Sure ormconfig.json, nodemon.json or nodemon-deploy.json has proper value associated with database connection.
+6. Built the code with the following command
     ```
     yarn build
     ```

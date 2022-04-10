@@ -3,14 +3,13 @@ import { Logger } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { UserService } from "./services/user.service";
 import { InviteUserDTO, UserRegistrationDTO } from "./dto/invite-user.dto";
-
+import { LoginDTO } from "./dto/user-info.dto";
 
 @Controller("api/v1")
 export class UserController {
   private readonly logger = new Logger(UserController.name);
   constructor(
     private readonly UserService: UserService) {}
-
 
   @Post("invite-user")
   @ApiOperation({
@@ -45,6 +44,28 @@ export class UserController {
 
     try {
       const response = await this.UserService.completeRegistration(body);
+      return response;
+    }catch(error) {
+      console.log(error);
+      return {
+        isSuccess: false,
+        message: `Something went wrong. Please Try again later.`
+      }
+    }
+  }
+
+  @Post("login")
+  @ApiOperation({
+    description: "This api is for user log in",
+    summary: "login user with email and password",
+  })
+  public async login(
+    @Body() body: LoginDTO
+  ): Promise<any> {
+    this.logger.log(`login has been initiated`);
+
+    try {
+      const response = await this.UserService.loginUser(body);
       return response;
     }catch(error) {
       return {

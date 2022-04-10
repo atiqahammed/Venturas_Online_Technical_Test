@@ -7,7 +7,7 @@ export class UserInfo extends BaseEntity {
   @Column({ type: 'varchar', length: 300, nullable: true })
   Department: string;
 
-  @Column({ type: 'varchar', length: 300, unique: true })
+  @Column({ type: 'varchar', length: 300, nullable: true })
   DateOfBirth: string;
 
   @Column({type: "int", nullable: true })
@@ -16,7 +16,7 @@ export class UserInfo extends BaseEntity {
   @Column({ type: 'varchar', length: 1024 })
   Password: string;
 
-  @Column({ type: 'varchar', length: 300, unique: true })
+  @Column({ type: 'varchar', length: 300, nullable: true })
   UserType: string;
   
 }

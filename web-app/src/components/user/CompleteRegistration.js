@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { post } from "./../../util/httpClient";
 import TextInput from "../common/TextInput";
+import { useHistory } from "react-router-dom";
 
 function CompleteRegistration(props) {
+  let history = useHistory();
 
   const query = new URLSearchParams(props.location.search);
   const token = query.get('token');
@@ -47,12 +49,7 @@ function CompleteRegistration(props) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log('here');
-    const isInvalid = formIsValid();
-    console.log(isInvalid);
     if (!formIsValid()) return;
-
-    console.log(user)
 
     const requestBody = {
       "uuid": token,
@@ -66,14 +63,13 @@ function CompleteRegistration(props) {
       "remarks": user.remarks,
       "dateOfBirth": user.dateOfBirth
     }
-    console.log(requestBody);
+
     post('/complete-user-registration', requestBody).then(response => {
-      console.log(response);
       if(response && response.data && response.data.isSuccess) {
         toast("User registration is completed. Please login");
-       
+        history.push('/');
       }
-      if(!response.isSuccess && response.data.message) {
+      else if(!response.isSuccess && response.data.message) {
         toast(response.data.message);
       }
     }).catch(error => {

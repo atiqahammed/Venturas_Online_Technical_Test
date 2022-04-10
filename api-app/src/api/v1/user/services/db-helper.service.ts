@@ -4,11 +4,7 @@ import { UserInfo } from "../../../../model/user.info.entity";
 import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
-import {
-  SaveUserInfo,
-  UserInfoResponse,
-  LoginDTO,
-} from "../dto/user-info.dto";
+import { LoginDTO } from "../dto/user-info.dto";
 import { InviteUserDTO, UserRegistrationDTO } from "../dto/invite-user.dto";
 import { Invitation } from "../../../../model/invittion.entity";
 
@@ -24,30 +20,33 @@ export class UserTypeDBHelperService {
 
   async completeRegistration(data: UserRegistrationDTO): Promise<any> {
     this.logger.log(`completeRegistration has been initiated.`);
-    let result = await this.invitationRepo.findOne({where : { UUID : data.uuid }});
+    let result = await this.invitationRepo.findOne({
+      where: { UUID: data.uuid },
+    });
 
-    if(!result) {
+    if (!result) {
       return {
         isSuccess: false,
-        message: `Invitation not exists with id: ${data.uuid}.`
-      }
+        message: `Invitation not exists with id: ${data.uuid}.`,
+      };
     }
 
-    if(result.Status != 'pending') {
+    if (result.Status != "pending") {
       return {
         isSuccess: false,
-        message:  `Invitation has been expired.`
-      }
+        message: `Invitation has been expired.`,
+      };
     }
 
-    let user = await this.userInfoRepo.findOne({where: {Email: result.Email }});
+    let user = await this.userInfoRepo.findOne({
+      where: { Email: result.Email },
+    });
 
-    if(user) {
-
+    if (user) {
       return {
         isSuccess: false,
-        message:  `User already exists with same email.`
-      }
+        message: `User already exists with same email.`,
+      };
     }
 
     const passwordCheck = await bcrypt.compare(
@@ -55,14 +54,14 @@ export class UserTypeDBHelperService {
       result.TemporaryPassword
     );
 
-    if(!passwordCheck) {
+    if (!passwordCheck) {
       return {
         isSuccess: false,
-        message:  `Invalid Password`
-      }
+        message: `Invalid Password`,
+      };
     }
 
-    result.Status = 'complete';
+    result.Status = "complete";
     await this.invitationRepo.save(result);
 
     let newUser = new UserInfo();
@@ -76,7 +75,8 @@ export class UserTypeDBHelperService {
     newUser.PhoneNumber = data.phoneNumber;
     newUser.Address = data.address;
     newUser.ZipCode = data.zipCode;
-    const saltRounds = (Math.floor(Math.random() * data.password.length) + 1000) % 1000;
+    const saltRounds =
+      (Math.floor(Math.random() * data.password.length) + 1000) % 1000;
     newUser.Password = await bcrypt.hash(data.password, saltRounds);
 
     await this.userInfoRepo.save(newUser);
@@ -84,14 +84,14 @@ export class UserTypeDBHelperService {
     this.logger.log(`returning from completeRegistration.`);
     return {
       isSuccess: true,
-      message: 'Account Created Successfully.'
+      message: "Account Created Successfully.",
     };
   }
 
-  async getUserInfo(): Promise<UserInfoResponse[]> {
+  async getUserInfo(): Promise<any[]> {
     this.logger.log(`getUserInfo has been initiated.`);
     let result;
-    let response: UserInfoResponse[] = new Array();
+    let response: any[] = new Array();
     try {
       result = await this.userInfoRepo.find();
       response = result.map((item) => {
@@ -112,7 +112,7 @@ export class UserTypeDBHelperService {
     return response;
   }
 
-  async loginInUser(data: LoginDTO): Promise<UserInfoResponse> {
+  async loginInUser(data: LoginDTO): Promise<any> {
     this.logger.log(`loginInUser has been initiated.`);
 
     const userWithEmail = await this.userInfoRepo.findOne({
@@ -122,79 +122,28 @@ export class UserTypeDBHelperService {
     });
 
     if (!userWithEmail || !userWithEmail.Email) {
-      throw new BadRequestException(`Invalid user credential.`);
+      return {
+        isSuccess: false,
+        message: "Invalid user credential.",
+      };
     }
 
     const passwordCheck = await bcrypt.compare(
       data.password,
       userWithEmail.Password
     );
-    if(!passwordCheck) {
-      throw new BadRequestException(`Invalid user credential.`);
+    if (!passwordCheck) {
+      return {
+        isSuccess: false,
+        message: "Invalid user credential.",
+      };
     }
 
-    let response = new UserInfoResponse();
-    response.name = userWithEmail.Name;
-    response.email = userWithEmail.Email;
-    response.id = userWithEmail.Id;
-    // response.EOA = userWithEmail.EOA;
-    response.createdDate = userWithEmail.CreateDate.toString();
-
-    return response;
-  }
-
-  async saveUserInfo(data: SaveUserInfo): Promise<UserInfoResponse> {
-    this.logger.log(`saveUserInfo has been initiated.`);
-
-    const userWithEmail = await this.userInfoRepo.findOne({
-      where: {
-        Email: data.email,
-      },
-    });
-
-    if (userWithEmail) {
-      throw new BadRequestException(
-        `This email '${data.email}' has already been used.`
-      );
-    }
-
-    const userWithEoa = await this.userInfoRepo.findOne({
-      where: {
-        EOA: data.EOA,
-      },
-    });
-
-    if (userWithEoa) {
-      throw new BadRequestException(
-        `This EOA '${data.EOA}' has already been used.`
-      );
-    }
-
-    let response = new UserInfoResponse();
-    const saltRounds = (Math.floor(Math.random() * data.password.length) + 1000) % 1000;
-
-    try {
-      let newUserInfo = new UserInfo();
-      newUserInfo.Name = data.name;
-      newUserInfo.Email = data.email;
-      // newUserInfo.EOA = data.EOA;
-      const passwordHash = await bcrypt.hash(data.password, saltRounds);
-      newUserInfo.Password = passwordHash;
-      let result = await this.userInfoRepo.save(newUserInfo);
-      response.name = result.Name;
-      response.email = result.Email;
-      response.id = result.Id;
-      // response.EOA = result.EOA;
-      response.createdDate = result.CreateDate.toString();
-    } catch (error) {
-      this.logger.error(error);
-      throw new BadRequestException(
-        "Could not save user. Something went wrong."
-      );
-    }
-
-    this.logger.log(`returning from saveUserInfo.`);
-    return response;
+    return {
+      isSuccess: true,
+      message: "Login Success",
+      user: userWithEmail,
+    };
   }
 
   async inviteUser(userInfo: InviteUserDTO): Promise<any> {
@@ -203,15 +152,15 @@ export class UserTypeDBHelperService {
     const existingUsers = await this.invitationRepo.find({
       where: {
         Email: userInfo.email,
-        Status: 'completed'
-      }
+        Status: "completed",
+      },
     });
 
-    if(existingUsers && existingUsers.length > 0) {
+    if (existingUsers && existingUsers.length > 0) {
       return {
         isSuccess: false,
-        message: `User already exists with email: ${userInfo.email}`
-      }
+        message: `User already exists with email: ${userInfo.email}`,
+      };
     }
 
     let inviation = new Invitation();
@@ -219,9 +168,8 @@ export class UserTypeDBHelperService {
     inviation.CompanyId = userInfo.companyId;
     inviation.UserType = userInfo.userType;
     inviation.InvitedBy = userInfo.invitedBy;
-    inviation.Status = 'pending';
+    inviation.Status = "pending";
     inviation.UUID = uuidv4();
-
 
     const saltRounds = (Math.floor(Math.random() * 13) + 1000) % 1000;
     let password = uuidv4();
@@ -235,7 +183,7 @@ export class UserTypeDBHelperService {
       isSuccess: true,
       email: userInfo.email,
       uuid: user.UUID,
-      password: password
-    }
+      password: password,
+    };
   }
 }

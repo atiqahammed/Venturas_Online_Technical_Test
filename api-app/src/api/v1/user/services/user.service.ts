@@ -1,5 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { LoginDTO, SaveUserInfo } from "../dto/user-info.dto";
+import { LoginDTO } from "../dto/user-info.dto";
 import { UserTypeDBHelperService } from "./db-helper.service";
 import * as uuid from "uuid";
 import { CacheManagerService } from "../../../../common/cache/cache.service";
@@ -16,20 +16,6 @@ export class UserService {
     private readonly cacheManagerService: CacheManagerService
   ) {
     this.timeoutNum = Number(process.env.SESSION_TIMEOUT) || 3600;
-  }
-
-  public async saveUserInfo(dto: SaveUserInfo): Promise<any> {
-    this.logger.log("SaveUserType has been initiated.");
-    const response = await this.dbHelperService.saveUserInfo(dto);
-    let apiKey = uuid.v1();
-    await this.cacheManagerService.addToCache(
-      dto.email,
-      apiKey,
-      this.timeoutNum
-    );
-    response["apiKey"] = apiKey;
-    this.logger.log("Returning from SaveUserType.");
-    return response;
   }
 
   public async loginUser(dto: LoginDTO): Promise<any> {

@@ -10,11 +10,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from '../../auth/headerAuth/auth.module';
 import { TokenAuthModule } from '../../auth/tokenAuth/auth.module';
 import { Invitation } from "../../../model/invittion.entity";
+import { Company } from "../../../model/company.entity";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserInfo]),
     TypeOrmModule.forFeature([Invitation]),
+    TypeOrmModule.forFeature([Company]),
     CommonCacheModule,AuthModule,TokenAuthModule
   ],
   controllers: [UserController],

@@ -4,6 +4,7 @@ import { ApiOperation } from "@nestjs/swagger";
 import { UserService } from "./services/user.service";
 import { InviteUserDTO, UserRegistrationDTO } from "./dto/invite-user.dto";
 import { LoginDTO } from "./dto/user-info.dto";
+import { SaveCompanyDTO } from "./dto/user-type.dto";
 
 @Controller("api/v1")
 export class UserController {
@@ -68,6 +69,28 @@ export class UserController {
       const response = await this.UserService.loginUser(body);
       return response;
     }catch(error) {
+      return {
+        isSuccess: false,
+        message: `Something went wrong. Please Try again later.`
+      }
+    }
+  }
+
+  @Post("save-company")
+  @ApiOperation({
+    description: "This api is for saving company information",
+    summary: "This api is for saving company information",
+  })
+  public async saveCompany(
+    @Body() body: SaveCompanyDTO
+  ): Promise<any> {
+    this.logger.log(`saveCompany has been initiated`);
+
+    try {
+      const response = await this.UserService.saveCompany(body);
+      return response;
+    }catch(error) {
+      console.log(error);
       return {
         isSuccess: false,
         message: `Something went wrong. Please Try again later.`

@@ -1,18 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { post } from "../../util/httpClient";
 import { toast } from "react-toastify";
 import TextInput from "../common/TextInput";
 import { useHistory } from "react-router-dom";
+import { useContext } from "react";
+import { AppContext } from "../../context/AppContext";
 
 function Login() {
 
   let history = useHistory();
+  const { setUserInfo, logout } =
+        useContext(AppContext);
 
   const [errors, setErrors] = useState({});
   const [user, setUser] = useState({
     email: '',
     password: ''
   });
+
+  useEffect(() => {
+    logout();
+  }, []);
 
   function handleChange({target}) {
     setUser({
@@ -39,12 +47,12 @@ function Login() {
       "email": user.email,
       "password": user.password
     }
-    console.log(requestBody);
+    
     post('/login', requestBody).then(response => {
-      console.log(response);
       if(response && response.data && response.data.isSuccess) {
         toast("User successfully logged in.");
-        history.push('/about');
+        setUserInfo(response.data.user);
+        history.push('/profile');
       }
       else if(!response.isSuccess && response.data.message) {
         toast(response.data.message);

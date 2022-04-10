@@ -7,6 +7,8 @@ import { v4 as uuidv4 } from "uuid";
 import { LoginDTO } from "../dto/user-info.dto";
 import { InviteUserDTO, UserRegistrationDTO } from "../dto/invite-user.dto";
 import { Invitation } from "../../../../model/invittion.entity";
+import { SaveCompanyDTO } from "../dto/user-type.dto";
+import { Company } from "../../../../model/company.entity";
 
 @Injectable()
 export class UserTypeDBHelperService {
@@ -15,7 +17,9 @@ export class UserTypeDBHelperService {
     @InjectRepository(UserInfo)
     private readonly userInfoRepo: Repository<UserInfo>,
     @InjectRepository(Invitation)
-    private readonly invitationRepo: Repository<Invitation>
+    private readonly invitationRepo: Repository<Invitation>,
+    @InjectRepository(Company)
+    private readonly companyRepo: Repository<Company>
   ) {}
 
   async completeRegistration(data: UserRegistrationDTO): Promise<any> {
@@ -88,28 +92,28 @@ export class UserTypeDBHelperService {
     };
   }
 
-  async getUserInfo(): Promise<any[]> {
-    this.logger.log(`getUserInfo has been initiated.`);
-    let result;
-    let response: any[] = new Array();
-    try {
-      result = await this.userInfoRepo.find();
-      response = result.map((item) => {
-        return {
-          name: item.Name,
-          email: item.Email,
-          id: item.Id,
-        };
-      });
-    } catch (error) {
-      this.logger.error(error);
-      throw new BadRequestException(
-        "Could not get user info. Something went wrong."
-      );
-    }
+  async saveCompany(dto: SaveCompanyDTO): Promise<any> {
+    this.logger.log(`saveCompany has been initiated.`);
+    
+    let company = new Company();
+    company.Name = dto.name;
+    company.CopanyNameKana = dto.companyNameKana;
+    company.Address = dto.address;
+    company.ZipCode = dto.zipCode;
+    company.PhoneNumber = dto.phoneNumber;
+    company.DateOfEstablishment = dto.dateOfEstablishment;
+    company.URLOfHP = dto.urlOfHP;
+    company.Remarks = dto.remarks;
+    company.OwnerId = dto.ownerId;
+    company.Email = dto.email;
 
-    this.logger.log(`returning from getUserInfo.`);
-    return response;
+    await this.companyRepo.save(company);
+
+    this.logger.log(`returning from saveCompany.`);
+    return {
+      isSuccess: true,
+      message: 'Company Information Saved.'
+    };
   }
 
   async loginInUser(data: LoginDTO): Promise<any> {

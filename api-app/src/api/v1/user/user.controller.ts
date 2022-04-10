@@ -4,7 +4,7 @@ import { ApiOperation } from "@nestjs/swagger";
 import { UserService } from "./services/user.service";
 import { InviteUserDTO, UserRegistrationDTO } from "./dto/invite-user.dto";
 import { LoginDTO } from "./dto/user-info.dto";
-import { getCompanyListDTO, SaveCompanyDTO } from "./dto/user-type.dto";
+import { getCompanyListDTO, SaveCompanyDTO, UpdateCompanyDTO } from "./dto/user-type.dto";
 
 @Controller("api/v1")
 export class UserController {
@@ -175,6 +175,28 @@ export class UserController {
 
     try {
       const response = await this.UserService.getCompanyById(body);
+      return response;
+    }catch(error) {
+      console.log(error);
+      return {
+        isSuccess: false,
+        message: `Something went wrong. Please Try again later.`
+      }
+    }
+  }
+
+  @Post("update-company")
+  @ApiOperation({
+    description: "This api is for updating company information",
+    summary: "This api is for updating company information",
+  })
+  public async updateCompany(
+    @Body() body: UpdateCompanyDTO
+  ): Promise<any> {
+    this.logger.log(`updateCompany has been initiated`);
+
+    try {
+      const response = await this.UserService.updateCompany(body);
       return response;
     }catch(error) {
       console.log(error);

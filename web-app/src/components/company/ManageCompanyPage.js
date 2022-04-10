@@ -88,17 +88,36 @@ function ManageCompanyPage(props) {
       ownerId: Id
     }
 
-    post('/save-company', requestBody).then(response => {
-      if(response && response.data && response.data.isSuccess) {
-        toast(response.data.message);
-        history.push('/company-list');
+    const id = props.match.params.id;
+    if(id) {
+      const updateRequestBody = {
+        ...requestBody,
+        id: Number(id)
       }
-      else if(!response.isSuccess && response.data.message) {
-        toast(response.data.message);
-      }
-    }).catch(error => {
-        console.log(error);
-    });
+      post('/update-company', updateRequestBody).then(response => {
+        if(response && response.data && response.data.isSuccess) {
+          toast(response.data.message);
+        }
+        else if(!response.isSuccess && response.data.message) {
+          toast(response.data.message);
+        }
+      }).catch(error => {
+          console.log(error);
+      });
+    } else {
+      post('/save-company', requestBody).then(response => {
+        if(response && response.data && response.data.isSuccess) {
+          toast(response.data.message);
+          history.push('/company-list');
+        }
+        else if(!response.isSuccess && response.data.message) {
+          toast(response.data.message);
+        }
+      }).catch(error => {
+          console.log(error);
+      });
+    }
+    
     
   }
 

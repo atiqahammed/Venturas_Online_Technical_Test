@@ -5,7 +5,7 @@ import * as uuid from "uuid";
 import { CacheManagerService } from "../../../../common/cache/cache.service";
 import { InviteUserDTO, UserRegistrationDTO } from "../dto/invite-user.dto";
 import { CourierClient } from "@trycourier/courier";
-import { getCompanyListDTO, SaveCompanyDTO } from "../dto/user-type.dto";
+import { getCompanyListDTO, SaveCompanyDTO, UpdateCompanyDTO } from "../dto/user-type.dto";
 
 @Injectable()
 export class UserService {
@@ -65,6 +65,13 @@ export class UserService {
     this.logger.log("getCompanyById has been initiated.");
     const response = await this.dbHelperService.getCompanyIdById(data);
     this.logger.log("getCompanyById from getUserInfo.");
+    return response;
+  }
+
+  public async updateCompany(data: UpdateCompanyDTO): Promise<any> {
+    this.logger.log("updateCompany has been initiated.");
+    const response = await this.dbHelperService.updateCompany(data);
+    this.logger.log("updateCompany from getUserInfo.");
     return response;
   }
 

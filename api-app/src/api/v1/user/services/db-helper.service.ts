@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { LoginDTO } from "../dto/user-info.dto";
 import { InviteUserDTO, UserRegistrationDTO } from "../dto/invite-user.dto";
 import { Invitation } from "../../../../model/invittion.entity";
-import { getCompanyListDTO, SaveCompanyDTO } from "../dto/user-type.dto";
+import { getCompanyListDTO, SaveCompanyDTO, UpdateCompanyDTO } from "../dto/user-type.dto";
 import { Company } from "../../../../model/company.entity";
 
 @Injectable()
@@ -197,6 +197,34 @@ export class UserTypeDBHelperService {
     return {
       isSuccess: true,
       company,
+    };
+  }
+
+  async updateCompany(dto: UpdateCompanyDTO) {
+    this.logger.log(`updateCompany has been initiated.`);
+
+    let company = await this.companyRepo.findOne({
+      where: {
+        Id: dto.id
+      }
+    });
+
+    company.Name = dto.name;
+    company.CopanyNameKana = dto.companyNameKana;
+    company.Email = dto.email;
+    company.Address = dto.address;
+    company.ZipCode = dto.zipCode;
+    company.DateOfEstablishment = dto.dateOfEstablishment;
+    company.PhoneNumber = dto.phoneNumber;
+    company.Remarks = dto.remarks;
+    company.URLOfHP = dto.urlOfHP;
+    
+    await this.companyRepo.save(company);
+
+    this.logger.log(`returning from updateCompany.`);
+    return {
+      isSuccess: true,
+      message: "Company Information Saved.",
     };
   }
 

@@ -61,6 +61,14 @@ export class SaveCompanyDTO {
   ownerId: number;
 }
 
+export class UpdateCompanyDTO extends SaveCompanyDTO{
+
+  @IsNotEmpty()
+  @ApiProperty()
+  id: number;
+
+}
+
 export class UserTypeResponse {
   @IsNotEmpty()
   @ApiProperty()

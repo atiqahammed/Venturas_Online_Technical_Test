@@ -61,6 +61,13 @@ export class UserService {
     return response;
   }
 
+  public async getCompanyById(data: getCompanyListDTO): Promise<any> {
+    this.logger.log("getCompanyById has been initiated.");
+    const response = await this.dbHelperService.getCompanyIdById(data);
+    this.logger.log("getCompanyById from getUserInfo.");
+    return response;
+  }
+
   public async completeRegistration(dto: UserRegistrationDTO): Promise<any> {
     this.logger.log("completeRegistration has been initiated.");
     const response = await this.dbHelperService.completeRegistration(dto);

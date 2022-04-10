@@ -184,6 +184,22 @@ export class UserTypeDBHelperService {
     };
   }
 
+  async getCompanyIdById(dto: getCompanyListDTO) {
+    this.logger.log(`getCompanyIdById has been initiated.`);
+
+    const company = await this.companyRepo.findOne({
+      where: {
+        Id: dto.id
+      }
+    })
+
+    this.logger.log(`returning from getCompanyIdById.`);
+    return {
+      isSuccess: true,
+      company,
+    };
+  }
+
   async loginInUser(data: LoginDTO): Promise<any> {
     this.logger.log(`loginInUser has been initiated.`);
 

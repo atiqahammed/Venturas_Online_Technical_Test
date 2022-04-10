@@ -163,4 +163,25 @@ export class UserController {
       }
     }
   }
+  @Post("get-company")
+  @ApiOperation({
+    description: "This api is for getting company information",
+    summary: "This api is for saving company information",
+  })
+  public async getCompanyById(
+    @Body() body: getCompanyListDTO
+  ): Promise<any> {
+    this.logger.log(`getCompanyById has been initiated`);
+
+    try {
+      const response = await this.UserService.getCompanyById(body);
+      return response;
+    }catch(error) {
+      console.log(error);
+      return {
+        isSuccess: false,
+        message: `Something went wrong. Please Try again later.`
+      }
+    }
+  }
 }

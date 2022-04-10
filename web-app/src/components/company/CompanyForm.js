@@ -1,10 +1,13 @@
 import React from "react";
 import TextInput from "../common/TextInput";
 import { Link } from "react-router-dom";
-// import Dropdown from 'react-dropdown';
-import ReadOnlyTextInput from "../common/ReadOnlyTextInput";
+import { useContext } from "react";
+import { AppContext } from "../../context/AppContext";
+import { USER_TYPE } from "./../../util/const";
 
 function CompanyForm(props) {
+
+  const {UserType} = useContext(AppContext);
   
     return (
     <form onSubmit={props.onSubmit}>
@@ -90,8 +93,8 @@ function CompanyForm(props) {
         error={props.errors.remarks}
       />
 
-    <input type="submit" value="Save" className="btn btn-dark" /> {"   "}
-    <Link to="/company-list" className="btn btn-dark">Cancel</Link>
+    {UserType != USER_TYPE.GENERAL_AUTHORITY && <input type="submit" value="Save" className="btn btn-dark" />} {"   "}
+    {UserType == USER_TYPE.SYSTEM_ADMIN &&<Link to="/company-list" className="btn btn-dark">Cancel</Link>}
     </form>
   );
 }

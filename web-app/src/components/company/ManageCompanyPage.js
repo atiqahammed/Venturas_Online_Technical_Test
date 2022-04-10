@@ -26,12 +26,33 @@ function ManageCompanyPage(props) {
   });
 
   useEffect(() => {
-    // const id = props.match.params.id;
-    // if(id) {
-    //   bookApi.getBook(id).then((_book) => {
-    //     setBook(_book)
-    //   });
-    // }
+    const id = props.match.params.id;
+    if(id) {
+      const requestBody = {
+        id: Number(id),
+      };
+
+      post("/get-company", requestBody)
+        .then((response) => {
+          if (response && response.data && response.data.isSuccess) {
+            setCompany({
+              ...company,
+              name: response.data.company.Name,
+              email: response.data.company.Email,
+              zipCode: response.data.company.ZipCode,
+              address: response.data.company.Address,
+              phoneNumber: response.data.company.PhoneNumber,
+              companyNameKana: response.data.company.CopanyNameKana,
+              urlOfHP: response.data.company.URLOfHP,
+              remarks: response.data.company.Remarks,
+              dateOfEstablishment: response.data.company.DateOfEstablishment
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }, [props.match.params.id]);
 
   function handleChange({target}) {

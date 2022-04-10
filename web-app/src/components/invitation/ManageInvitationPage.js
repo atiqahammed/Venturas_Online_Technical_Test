@@ -6,6 +6,7 @@ import { post } from "../../util/httpClient";
 import { useHistory } from "react-router-dom";
 import TextInput from "../common/TextInput";
 import { Link } from "react-router-dom";
+import { USER_TYPE } from "./../../util/const";
 
 function ManageInvitationPage(props) {
   let history = useHistory();
@@ -100,10 +101,10 @@ function ManageInvitationPage(props) {
                 name="userType"
                 onChange={handleChange}
               >
-                <option value="administrative authority">
-                  administrative authority
+                <option value={USER_TYPE.ADMIN_AUTHORITY}>
+                {USER_TYPE.ADMIN_AUTHORITY}
                 </option>
-                <option value="general authority">general authority</option>
+                <option value={USER_TYPE.GENERAL_AUTHORITY}>{USER_TYPE.GENERAL_AUTHORITY}</option>
               </select>
             </div>
           </div>

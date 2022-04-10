@@ -119,4 +119,26 @@ export class UserController {
       }
     }
   }
+
+  @Post("get-invitation-list")
+  @ApiOperation({
+    description: "This api is for getting invitation information",
+    summary: "This api is for saving invitation information",
+  })
+  public async invitationList(
+    @Body() body: getCompanyListDTO
+  ): Promise<any> {
+    this.logger.log(`invitationList has been initiated`);
+
+    try {
+      const response = await this.UserService.getInvitationList(body);
+      return response;
+    }catch(error) {
+      console.log(error);
+      return {
+        isSuccess: false,
+        message: `Something went wrong. Please Try again later.`
+      }
+    }
+  }
 }

@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
 import { post } from "../../util/httpClient";
 import { useContext } from "react";
-import CompanyList from './CompanyList';
+import InvitationList from './InvitationList';
 
 function InvitationPage () {
 
-    const [companyList, setCompanyList] = useState([]);
+    const [invitationList, setInvitationList] = useState([]);
     const { Id } =
         useContext(AppContext);
 
@@ -15,9 +15,9 @@ function InvitationPage () {
       const requestBody = {
         id: Id
       }
-      post('/get-company-list', requestBody).then(response => {
+      post('/get-invitation-list', requestBody).then(response => {
         if(response && response.data && response.data.isSuccess) {
-          setCompanyList(response.data.companyList);
+          setInvitationList(response.data.invitationList);
         }
       }).catch(error => {
           console.log(error);
@@ -30,7 +30,7 @@ function InvitationPage () {
             <h1>Invitation</h1>
             <Link to="/invitation" className="btn btn-dark">Add New Invitation</Link>
         </div>
-        {/* <CompanyList companyList={companyList}/> */}
+        <InvitationList invitationList={invitationList}/>
       </>
     );
   

@@ -78,7 +78,7 @@ function ManageInvitationPage(props) {
     <>
       <div className="jumbotron">
         <h1>
-          {props.match.params.id ? "Company Details" : "Create New Company"}
+          {"Invite new user"}
         </h1>
       </div>
       <div className="container">

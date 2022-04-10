@@ -94,7 +94,7 @@ export class UserTypeDBHelperService {
 
   async saveCompany(dto: SaveCompanyDTO): Promise<any> {
     this.logger.log(`saveCompany has been initiated.`);
-    
+
     let company = new Company();
     company.Name = dto.name;
     company.CopanyNameKana = dto.companyNameKana;
@@ -112,25 +112,39 @@ export class UserTypeDBHelperService {
     this.logger.log(`returning from saveCompany.`);
     return {
       isSuccess: true,
-      message: 'Company Information Saved.'
+      message: "Company Information Saved.",
     };
   }
 
   async getCompanyList(dto: getCompanyListDTO) {
     this.logger.log(`getCompanyList has been initiated.`);
-    
-    let companyList = await this.companyRepo.find(
-      {
-        where: {
-          OwnerId: dto.id
-        }
-      }
-    )
+
+    let companyList = await this.companyRepo.find({
+      where: {
+        OwnerId: dto.id,
+      },
+    });
 
     this.logger.log(`returning from getCompanyList.`);
     return {
       isSuccess: true,
-      companyList
+      companyList,
+    };
+  }
+
+  async getInvitationList(dto: getCompanyListDTO) {
+    this.logger.log(`getInvitationList has been initiated.`);
+
+    let invitationList = await this.invitationRepo.find({
+      where: {
+        InvitedBy: dto.id,
+      },
+    });
+
+    this.logger.log(`returning from getInvitationList.`);
+    return {
+      isSuccess: true,
+      invitationList,
     };
   }
 

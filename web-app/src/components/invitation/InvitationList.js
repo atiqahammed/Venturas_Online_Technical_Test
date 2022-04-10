@@ -1,27 +1,27 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function CompanyList (props) {
+function InvitationList (props) {
     return (
       <>
         <div className="container">
           <table className="table">
             <thead>
               <tr>
-                <th>Name</th>
                 <th>ID</th>
                 <th>Email</th>
-                <th>Address</th>
+                <th>Status</th>
+                <th>User Type</th>
               </tr>
             </thead>
             <tbody>
-                {props.companyList.map((company) =>{
+                {props.invitationList.map((invitation) =>{
                     return (
-                        <tr key={company.Id}>
-                            <td><Link to={"/company/" + company.Id}>{company.Name}</Link></td>
-                            <td>{company.Id}</td>
-                            <td>{company.Email}</td>
-                            <td>{company.Address}</td>
+                        <tr key={invitation.Id}>
+                            <td>{invitation.Id}</td>
+                            <td>{invitation.Email}</td>
+                            <td>{invitation.Status}</td>
+                            <td>{invitation.UserType}</td>
                         </tr>
                     )
                 })}
@@ -32,4 +32,4 @@ function CompanyList (props) {
     );
 }
 
-export default CompanyList;
+export default InvitationList;

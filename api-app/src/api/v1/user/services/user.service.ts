@@ -3,7 +3,7 @@ import { LoginDTO } from "../dto/user-info.dto";
 import { UserTypeDBHelperService } from "./db-helper.service";
 import * as uuid from "uuid";
 import { CacheManagerService } from "../../../../common/cache/cache.service";
-import { InviteUserDTO, UserRegistrationDTO } from "../dto/invite-user.dto";
+import { InviteUserDTO, UpdateProfileDTO, UserRegistrationDTO } from "../dto/invite-user.dto";
 import { CourierClient } from "@trycourier/courier";
 import { getCompanyListDTO, SaveCompanyDTO, UpdateCompanyDTO } from "../dto/user-type.dto";
 
@@ -72,6 +72,13 @@ export class UserService {
     this.logger.log("updateCompany has been initiated.");
     const response = await this.dbHelperService.updateCompany(data);
     this.logger.log("updateCompany from getUserInfo.");
+    return response;
+  }
+
+  public async updateProfile(data: UpdateProfileDTO): Promise<any> {
+    this.logger.log("updateProfile has been initiated.");
+    const response = await this.dbHelperService.updateProfile(data);
+    this.logger.log("updateProfile from getUserInfo.");
     return response;
   }
 

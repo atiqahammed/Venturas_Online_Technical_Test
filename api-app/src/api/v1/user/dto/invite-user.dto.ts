@@ -87,3 +87,54 @@ export class UserRegistrationDTO {
   @MaxLength(300)
   dateOfBirth: string;
 }
+
+export class UpdateProfileDTO {
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @IsString()
+  @MaxLength(300)
+  name: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @IsString()
+  @MaxLength(300)
+  zipCode: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @IsString()
+  @MaxLength(300)
+  address: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @IsString()
+  @MaxLength(300)
+  phoneNumber: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @IsString()
+  @MaxLength(300)
+  department: string;
+
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @IsString()
+  @MaxLength(300)
+  remarks: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @IsString()
+  @MaxLength(300)
+  dateOfBirth: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @IsNumber()
+  id: number;
+}

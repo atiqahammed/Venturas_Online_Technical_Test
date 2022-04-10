@@ -55,7 +55,7 @@ function CompleteRegistration(props) {
       "uuid": token,
       "name": user.name,
       "zipCode": user.zipCode,
-      "address": user.zipCode,
+      "address": user.address,
       "phoneNumber": user.phoneNumber,
       "department": user.department,
       "password": user.password,

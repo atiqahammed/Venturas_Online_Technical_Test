@@ -2,7 +2,7 @@ import { Body, Controller, Post } from "@nestjs/common";
 import { Logger } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { UserService } from "./services/user.service";
-import { InviteUserDTO, UserRegistrationDTO } from "./dto/invite-user.dto";
+import { InviteUserDTO, UpdateProfileDTO, UserRegistrationDTO } from "./dto/invite-user.dto";
 import { LoginDTO } from "./dto/user-info.dto";
 import { getCompanyListDTO, SaveCompanyDTO, UpdateCompanyDTO } from "./dto/user-type.dto";
 
@@ -197,6 +197,28 @@ export class UserController {
 
     try {
       const response = await this.UserService.updateCompany(body);
+      return response;
+    }catch(error) {
+      console.log(error);
+      return {
+        isSuccess: false,
+        message: `Something went wrong. Please Try again later.`
+      }
+    }
+  }
+
+  @Post("update-profile")
+  @ApiOperation({
+    description: "This api is for updating profile information",
+    summary: "This api is for updating profile information",
+  })
+  public async updateProfile(
+    @Body() body: UpdateProfileDTO
+  ): Promise<any> {
+    this.logger.log(`updateProfile has been initiated`);
+
+    try {
+      const response = await this.UserService.updateProfile(body);
       return response;
     }catch(error) {
       console.log(error);

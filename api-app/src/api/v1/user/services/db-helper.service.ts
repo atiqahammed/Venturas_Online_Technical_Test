@@ -5,7 +5,7 @@ import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
 import { LoginDTO } from "../dto/user-info.dto";
-import { InviteUserDTO, UserRegistrationDTO } from "../dto/invite-user.dto";
+import { InviteUserDTO, UpdateProfileDTO, UserRegistrationDTO } from "../dto/invite-user.dto";
 import { Invitation } from "../../../../model/invittion.entity";
 import { getCompanyListDTO, SaveCompanyDTO, UpdateCompanyDTO } from "../dto/user-type.dto";
 import { Company } from "../../../../model/company.entity";
@@ -225,6 +225,32 @@ export class UserTypeDBHelperService {
     return {
       isSuccess: true,
       message: "Company Information Saved.",
+    };
+  }
+
+  async updateProfile(dto: UpdateProfileDTO) {
+    this.logger.log(`updateProfile has been initiated.`);
+
+    let user = await this.userInfoRepo.findOne({
+      where: {
+        Id: dto.id
+      }
+    });
+
+    user.Name = dto.name;
+    user.Address = dto.address;
+    user.DateOfBirth = dto.dateOfBirth;
+    user.ZipCode = dto.zipCode;
+    user.Department = dto.department;
+    user.PhoneNumber = dto.phoneNumber;
+    user.Remarks = dto.remarks;
+    
+    await this.userInfoRepo.save(user);
+
+    this.logger.log(`returning from updateProfile.`);
+    return {
+      isSuccess: true,
+      message: "Profile Information Saved.",
     };
   }
 

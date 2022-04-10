@@ -8,7 +8,6 @@ import { AppContext } from "../../context/AppContext";
 function Profile(props) {
 
   const { 
-    setUserInfo, 
     Id,
     UserType,
     Name,
@@ -18,7 +17,6 @@ function Profile(props) {
     PhoneNumber,
     Department,
     DateOfBirth,
-    CompanyId,
   } = useContext(AppContext);
 
   const [errors, setErrors] = useState({});
@@ -46,8 +44,6 @@ function Profile(props) {
     if (!user.address) _errors.address = "Address is required";
     if (!user.phoneNumber) _errors.phoneNumber = "Phone Number is required";
     if (!user.department) _errors.department = "Department is required";
-    if (!user.password) _errors.password = "Password is required";
-    if (!user.temporaryPassword) _errors.temporaryPassword = "Temporary Password is required";
     if (!user.remarks) _errors.remarks = "Remarks is required";
     if (!user.dateOfBirth) _errors.dateOfBirth = "Date Of Birth is required";
 
@@ -60,30 +56,27 @@ function Profile(props) {
     event.preventDefault();
     if (!formIsValid()) return;
 
-    // const requestBody = {
-    //   "uuid": token,
-    //   "name": user.name,
-    //   "zipCode": user.zipCode,
-    //   "address": user.zipCode,
-    //   "phoneNumber": user.phoneNumber,
-    //   "department": user.department,
-    //   "password": user.password,
-    //   "temporaryPassword": user.temporaryPassword,
-    //   "remarks": user.remarks,
-    //   "dateOfBirth": user.dateOfBirth
-    // }
+    const requestBody = {
+      "name": user.name,
+      "zipCode": user.zipCode,
+      "address": user.address,
+      "phoneNumber": user.phoneNumber,
+      "department": user.department,
+      "remarks": user.remarks,
+      "dateOfBirth": user.dateOfBirth,
+      id: Id
+    }
 
-    // post('/complete-user-registration', requestBody).then(response => {
-    //   if(response && response.data && response.data.isSuccess) {
-    //     toast("User registration is completed. Please login");
-    //     history.push('/');
-    //   }
-    //   else if(!response.isSuccess && response.data.message) {
-    //     toast(response.data.message);
-    //   }
-    // }).catch(error => {
-    //     console.log(error);
-    // });
+    post('/update-profile', requestBody).then(response => {
+      if(response && response.data && response.data.isSuccess) {
+        toast(response.data.message);
+      }
+      else if(!response.isSuccess && response.data.message) {
+        toast(response.data.message);
+      }
+    }).catch(error => {
+        console.log(error);
+    });
   }
 
   return (

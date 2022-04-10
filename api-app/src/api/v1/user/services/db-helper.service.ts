@@ -201,10 +201,11 @@ export class UserTypeDBHelperService {
 
     const user = await this.invitationRepo.save(inviation);
 
-    this.logger.log(`returning from deleteUserInfo.`);
+    this.logger.log(`returning from inviteUser.`);
     return {
       isSuccess: true,
       email: userInfo.email,
+      uuid: user.UUID,
       password: password
     }
   }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 // import { getAuthors } from "../../api/authorApi";
 import AuthorList from "./AuthorList";
 import { Link } from "react-router-dom";
@@ -11,7 +11,7 @@ function AuthorPage (props) {
 
     useEffect(() => {
       props.loadAuthors();   
-    }, []);
+    }, [props]);
   
     return (
       <>
